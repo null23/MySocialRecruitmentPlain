@@ -17,6 +17,7 @@
 	如何确保业务操作和消息发送是一致的？
 	比如这种场景：我们需要在支付成功后给另一个系统发消息，可是支付成功后没有发消息，或者明明支付失败却发了支付成功的消息
 	!(https://github.com/null23/picture/blob/master/MQ/%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7.png?raw=true)
+	<img src="https://github.com/null23/picture/blob/master/MQ/%E5%8F%91%E9%80%81%E6%B6%88%E6%81%AF%E7%9A%84%E4%B8%80%E8%87%B4%E6%80%A7.png?raw=true">
 
 #### 2.消费者消费消息
 	如何确保消息被接收并且被操作了？
