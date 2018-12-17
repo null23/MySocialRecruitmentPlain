@@ -1,6 +1,7 @@
-## JMS(Java Mail Message)：
+##   
+### JMS(Java Mail Message)：
 	所有的MQ都是基于JMS编程模型来实现的，可以把JMS理解为一种标准和规范。
-### 1.消息模型：
+#### 1.消息模型：
 	点对点(point to point)：
 		消息由发送者(sender)发布至队列(Queue)中，只要有一个接收者接收了这条消息，这条消息就会从队列中被取出。
 		也就是说，虽然可以同时存在多个consumer，也只会被**消费一次**。
