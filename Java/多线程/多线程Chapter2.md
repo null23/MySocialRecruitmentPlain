@@ -28,11 +28,12 @@
 			修饰代码块
 				synchronized(this) 对象锁
 				synchronized(obj) 对象锁
+				synchronized(Class.class) 类锁
 			修饰方法
 				调用该方法的对象的对象锁 
 			修饰静态方法
 				类锁
-			修饰类
+				
 
 #### 4. 原子性
 	i++并不是原子性的，包含了 读取-修改-写入三个操作。
