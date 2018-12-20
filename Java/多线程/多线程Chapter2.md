@@ -23,17 +23,37 @@
 			多个线程能够互斥的访问一个代码块
 			多个线程共享的变量的修改，及时可见
 			避免指令重排序
-
 		synchronized的用法：
 			修饰代码块
 				synchronized(this) 对象锁
 				synchronized(obj) 对象锁
 				synchronized(Class.class) 类锁
 			修饰方法
-				调用该方法的对象的对象锁 
+				调用该方法的对象的 对象锁 
 			修饰静态方法
 				类锁
-				
+
+	3.2 介绍一个概念：重入
+		对于相同的资源的访问，A线程占用中，B线程就要一直阻塞下去直到A线程释放资源。
+		对于相同资源的访问，一个已经获取到资源的线程，再次获取该资源，可以直接获取到，这就是可重入性。
+		如果此时A线程不能获取相同资源，就会一直等待阻塞，A线程也不会释放资源，就会产生死锁。
+		public class FatherSync {
+			public synchronized void syncMethod(){
+				System.out.println("father");
+			}
+		}
+		public class SonSync extends FatherSync {
+			@Override
+			public synchronized void syncMethod() {
+				System.out.println("son");
+				super.syncMethod();
+			}
+			public static void main(String[] args) {
+				SonSync sonSync = new SonSync();
+				sonSync.syncMethod();
+			}
+		}
+		注意，此时获取到的锁的资源，都是对象锁，也就是调用该方法的对象，也就是该子类的实例对象。
 
 #### 4. 原子性
 	i++并不是原子性的，包含了 读取-修改-写入三个操作。
