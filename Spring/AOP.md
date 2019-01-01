@@ -6,11 +6,12 @@
 
 ####动态代理(运行期间创建的代理，所以说是动态的)
    #####JDK动态代理
+     https://blog.csdn.net/Dome_/article/details/82427386
 
    #####CGLib动态代理
+    略
 
 ####Spring AOP动态代理
-
    #####AOP中的基本概念，术语
 
    #####Spring提供的四种类型的AOP支持
@@ -18,3 +19,11 @@
         2.纯POJO切面
         3.@AspectJ注解驱动的切面
         4.注入式AspectJ切面
+    
+   #####Spring AOP
+        1.前置增强
+        2.后置增强
+        3.环绕增强(编程式和声明式)
+        4.抛出增强
+        5.引入增强
+        切面 = PointCut(切点，也就是哪个方法，比如slaughter方法) + Advice(也就是增强，比如before和after)
