@@ -60,3 +60,4 @@
     ThreadLocalMap
     ThreadLocal其实是由一个个ThreadLocalMap维护的，每一个线程对应一个ThreadLocalMap的一个k-v。
     其中，key是ThreadLocal，value是用户存的值。
+    ![ThreadLocal内存模型](https://github.com/null23/picture/raw/master/%E5%A4%9A%E7%BA%BF%E7%A8%8B/ThreadLocal-JMM.png)
