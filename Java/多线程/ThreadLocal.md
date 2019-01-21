@@ -61,3 +61,18 @@
     ThreadLocal其实是由一个个ThreadLocalMap维护的，每一个线程对应一个ThreadLocalMap的一个k-v。
     其中，key是ThreadLocal，value是用户存的值。
     ![ThreadLocal内存模型](https://raw.githubusercontent.com/null23/picture/master/Thread/ThreadLocal-JMM.png)
+
+    ThreadLocal的扩容：
+　　初始容量16，负载因子2/3，解决冲突的方法是再hash法，也就是：在当前hash的基础上再自增一个常量。
+
+##### 4.ThreadLocal产生的内存泄露问题
+    ThreadLocalMap使用ThreadLocal的弱引用作为key，如果一个ThreadLocal没有外部强引用引用他，那么系统gc的时候，这个ThreadLocal势必会被回收，这样一来，ThreadLocalMap中就会出现key为null的Entry，就没有办法访问这些key为null的Entry的value，如果当前线程再迟迟不结束的话，这些key为null的Entry的value就会一直存在一条强引用链：
+    Thread Ref -> Thread -> ThreaLocalMap -> Entry -> value
+    永远无法回收，造成内存泄露。
+
+##### 5.ThreadLocalMap设计时的对上面问题的对策：
+    ThreadLocalMap的getEntry函数的流程大概为：
+    首先从ThreadLocal的直接索引位置(通过ThreadLocal.threadLocalHashCode & (table.length-1)运算得到)获取Entry e，如果e不为null并且key相同则返回e；
+    如果e为null或者key不一致则向下一个位置查询，如果下一个位置的key和当前需要查询的key相等，则返回对应的Entry。否则，如果key值为null，则擦除该位置的Entry，并继续向下一个位置查询。在这个过程中遇到的key为null的Entry都会被擦除，那么Entry内的value也就没有强引用链，自然会被回收。仔细研究代码可以发现，set操作也有类似的思想，将key为null的这些Entry都删除，防止内存泄露。
+    　　但是光这样还是不够的，上面的设计思路依赖一个前提条件：要调用ThreadLocalMap的getEntry函数或者set函数。这当然是不可能任何情况都成立的，所以很多情况下需要使用者手动调用ThreadLocal的remove函数，手动删除不再需要的ThreadLocal，防止内存泄露。所以JDK建议将ThreadLocal变量定义成private static的，这样的话ThreadLocal的生命周期就更长，由于一直存在ThreadLocal的强引用，所以ThreadLocal也就不会被回收，也就能保证任何时候都能根据ThreadLocal的弱引用访问到Entry的value值，然后remove它，防止内存泄露。
+   
