@@ -4,7 +4,7 @@
     3.ThreadLocal是用来维护本线程的变量的，并不能解决共享变量的并发问题。ThreadLocal是各线程将值存入该线程的map中，以ThreadLocal自身作为key，需要用时获得的是该线程之前存入的值。如果存入的是共享变量，那取出的也是共享变量，并发问题还是存在的。
     4.使用场景：一个变量需要在一个线程内传递，并且多个线程并不共享。如果一个参数在很多方法(一个方法的调用链)都需要，为了避免这个参数传递多层，我们可以使用ThreadLocal来代替这个参数。
     5.注意：不要把共享变量放到ThreadLocal中，多个线程的ThreadLocal.get获取到的还是这个共享变量本身，还是有并发访问问题。所以保存到ThreadLocal之前，应该通过克隆或者new来创建一个新的对象，再进行保存。
-
+  
 ##### 2.一个关于ThreadLocal的Demo
     public class ThreadLocalTest {
         /**
