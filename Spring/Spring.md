@@ -15,9 +15,20 @@
 		1.Bean工厂
 		2.应用上下文 ApplicationContext接口(简单点，可以理解为，应用上下文就是容器的对象，是对于Spring容器抽象的实现)
 			如何创建应用上下文？配置XML就可以了
+	1.6.Bean的初始化
+		1.Bean初始化的条件：Bean被定义(XML中配置，或者加了注解)
+		2.InitializingBean接口：
+			一个Bean实现InitializingBean接口的afterPropertiesSet()方法
+			此方法会在Bean所有的属性被初始化，但是Bean尚未初始化完成之前调用(Bean初始化完成的标志是什么?)
+		3.创建一个新的类，实现BeanPostProcessor接口的postProcessBeforeInitialization方法和postProcessAfterInitialization方法，并把这个类让Spring容器初始化(配置，注解)。
+			这会让所有的Bean在初始化/销毁的时候调用以上两个方法。
+
+
 	1.5 Bean的生命周期
-		1.非Spring：直接new进行实例化，由Java自动回收
-		2.Spring：
+		1.简易表述：Bean的定义——Bean的初始化——Bean的使用——Bean的销毁
+		2.非Spring：直接new进行实例化，由Java自动回收
+		3.强调Bean生命周期中两个非常重要的回调方法
+		4.Spring：
 			1.对bean进行实例化
 			2.将值和bean的引用，注入到bean对应的属性中
 			3.若bean实现了BeanNameAware接口，Spring将ID传递给setBeanName()方法
