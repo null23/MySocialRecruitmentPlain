@@ -77,3 +77,10 @@
         HashMap
         TreeMap
  等 
+
+ #### 7.JDK
+    （1）List、Map、Set实现类的源代码
+    （2）ReentrantLock、AQS的源代码
+    （3）AtomicInteger的实现原理，主要能说清楚CAS机制并且AtomicInteger是如何利用CAS机制实现的
+    （4）线程池的实现原理
+    （5）Object类中的方法以及每个方法的作用
