@@ -60,7 +60,7 @@
     ThreadLocalMap
     ThreadLocal其实是由一个个ThreadLocalMap维护的，每一个线程对应一个ThreadLocalMap的一个k-v。
     其中，key是ThreadLocal，value是用户存的值。
-    ![ThreadLocal内存模型](https://raw.githubusercontent.com/null23/picture/master/Thread/ThreadLocal-JMM.png)
+![ThreadLocal内存模型](https://raw.githubusercontent.com/null23/picture/master/Thread/ThreadLocal-JMM.png)
 
     ThreadLocal的扩容：
 　　初始容量16，负载因子2/3，解决冲突的方法是再hash法，也就是：在当前hash的基础上再自增一个常量。
