@@ -1,0 +1,1 @@
+每个topic分为多个partition，多个partition在多个不同的broker之间拥有备份
