@@ -27,3 +27,15 @@
 
 #### 3）生产者会不会弄丢数据
     如果按照上述的思路设置了ack=all，一定不会丢，要求是，你的leader接收到消息，所有的follower都同步到了消息之后，才认为本次写成功了。如果没满足这个条件，生产者会自动不断的重试，重试无限次。
+
+### 一个线上的offset丢失的问题处理
+kafka将某消费组的offset删除，导致consuner重新消费（取决于auto.offset.reset）
+
+1、如果在低流量的分区上存在consumer，则kafka可能会删除该consumer已经提交的偏移量。一旦删除了偏移量，消费者的重新启动或者重新balance将导致消费者找不到任何提交的偏移量，并从最早/最晚开始消费（取决于auto.offset.reset）这会导致只允许消费一次的消息有可能会被消费多次
+
+目前的解决方法是：
+1、定期为您拥有的每个分区提交一个偏移量，确保它比offsets.retention.minutes（消费者可能不知道的代理端设置）小
+2、将offsets.retention.minutes的值变得非常高。您必须确保它高于您要支持的任何有效的低流量速率。例如，如果您想支持某人每月生产一次的主题，则必须将offsetes.retention.mintues设置为1个月。
+3、打开enable.auto.commit（这基本上是＃1，但更容易实现）
+
+offsets.retention.minutes的值可改变kafka offset的过期时间，单位为分钟。默认是1440 也就是一天，我们kafka的消息过期时间是7天，因此我们只需将时间设为10080即可

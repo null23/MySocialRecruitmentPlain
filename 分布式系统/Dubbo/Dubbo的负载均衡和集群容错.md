@@ -42,4 +42,14 @@
         failover(默认) 失败自动切换 
         failfast    快速失败，失败报错
 
-**provider和consumer都是可以进行配置的，配置的优先级:provider > consumer> 默认**
+**provider和consumer都是可以进行配置的，配置的优先级:provider > consumer> Spring/Dubbo原生API > -D(JVM启动参数) >默认**
+
+想一下，为啥provider > consumer?
+    作服务的提供方，比服务消费方更清楚服务的性能参数，如调用的超时时间、合理的重试次数等
+
+
+dubbo:method????
+
+.properties和xml的区别
+
+redis->redlock
