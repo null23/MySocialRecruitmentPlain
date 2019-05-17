@@ -58,9 +58,15 @@
 
 ### BeanFactory和ApplicationContext
     如果说BeanFactory是Sping的心脏，那么ApplicationContext就是完整的身躯了。
-    ApplicationContext实现了
+
+    BeanFactory
+        IoC容器可以实现的功能，BeanFactory基本也可以，比如DefaultListableBeanFactory就是一个纯粹的IoC容器，需要为他配置特定的BeanDefintion(不同的BeanDefintion还要绑定特定的ResourceLoader)才能完成这些功能，这里可以看出来弊端-是需要我们自己来关注如何配置特定的BeanDefintion读取器。但是这也提高了定制IoC容器的灵活性。
+
+    ApplicationContext
+        ApplicationContext在BeanFactory的基础上实现了更多的功能，比如(对Resource/BeanFactory/BeanDefition进行了封装)，譬如ClassPathXmlApplicationContext以及XmlWebApplicationContext等等，他们已经提供了不同的Resource读入的功能，不需要我们自己去像BeanFactory来关注读取器，一般使用的时候选择ApplicationContext是更好的选择。
 
 ### BeanDefinition
-    以 BeanDefinition 类为核心发散出的几个类，都是用于解决 Bean 的具体定义问题，包括 Bean 的名字是什么、它的类型是什么，它的属性赋予了哪些值或者引用，也就是 如何在 IoC 容器中定义一个 Bean，使得 IoC 容器可以根据这个定义来生成实例 的问题。
+    以 BeanDefinition 类为核心发散出的几个类，都是用于解决Bean的具体定义问题，包括Bean的名字是什么、它的类型是什么，它的属性赋予了哪些值或者引用，也就是如何在IoC容器中定义一个Bean，使得IoC容器可以根据这个定义来生成实例的问题。
 
 ### DefaultListableBeanFactory
+
