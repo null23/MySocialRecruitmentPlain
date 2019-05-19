@@ -1,0 +1,5 @@
+### 模板模式
+    1.AbstractBeanFactory中提供自动装配Bean属性的方法applyPropertyValues，其具体实现在其子类AutowireCapableBeanFactory中。
+    这个applyPropertyValues方法在AbstractBeanFactory中给出了空方法的实现，这种空方法一般都叫做hook(钩子)，我们经常提到的钩子函数一般就指父类中的空方法。
+
+    2.例如根据文件系统目录加载配置文件（FileSystemXmlApplicationContext），类路径加载配置文件(ClassPathXmlApplicationContext)，以及根据项目上下文目录(XmlWebApplicationContext)加载配置文件这几个不同的ApplicationContext，其实都是继承了AbstractApplicationContext接口，然后实现了其中的loadBeanDefinitions方法，而已经在AbstractApplicationContext中实现的refresh方法，调用了loadBeanDefinitions方法的实现(根据多态的不同的子类)，这个refresh虽然没有在子类中也实现，但是仍然被调用了(不重写的话默认就是调用父类的)
