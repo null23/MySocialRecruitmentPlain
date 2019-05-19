@@ -8,6 +8,9 @@
 ## IoC容器的初始化/Bean定义的载入
     Spring IoC的设计中，分为 1.Bean定义的载入 2.依赖注入 两个过程。注意，这是两个独立的过程，依赖注入一般发生在第一次通过getBean向容器索取Bean的时候(其实是看这个Bean是不是lazyinit的，是不是懒加载的)，如果这个Bean不是懒加载的，那么这个Bean实在IoC容器初始化的时候完成的。
 
+    1.单例模式并且是非延迟加载的对象，会在IOC容器初始化的时候被创建且初始化。
+    2.非单例模式或者是延迟加载的对象，是应用第一次向容器索要该Bean对象的时候被创建且初始化。
+
     下边说的都是IoC容器的初始化：
 
 ### BeanDefintion的Resource定位
@@ -19,4 +22,13 @@
     BeanDefintion包含了Bean的一系列信息，比如Bean的名字，类型，成员变量都有啥，以及各个成员变量的类型和值...
     
 ### BeanDefintion的注册
-    这步是向IoC容器注册那些BeanDefintion的过程。是调用BeanDefintionRegistry接口的实现来完成的。
+    这步是向IoC容器注册那些BeanDefintion的过程，把BeanDefintion的Bean的信息注册到registryMap中，是调用BeanDefintionRegistry接口的实现来完成的。
+
+### 真正的依赖注入
+    getBean方法的调用
+    1.通过beanName从beanDefintionMap中获取对应的bean，若没有，进行bean的实例化(依赖注入)操作
+    2.从registryMap获取对应的BeanDefintion的信息，根据这些信息
+        根据classType实例化属性为空的bean
+        根据propertyValues把属性注入到bean中
+        把bean put到beanDefintionMap中
+    3.返回bean
