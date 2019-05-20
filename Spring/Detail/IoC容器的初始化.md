@@ -32,3 +32,5 @@
         根据propertyValues把属性注入到bean中
         把bean put到beanDefintionMap中
     3.返回bean
+
+今天看下spring aop，dubbo服务发现详解，java spi原理，dubbo spi
