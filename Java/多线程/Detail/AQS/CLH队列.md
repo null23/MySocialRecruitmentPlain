@@ -96,7 +96,7 @@ final boolean acquireQueued(final Node node, int arg) {
             final Node p = node.predecessor();
             //如果前缀节点是头结点，并且当前线程获锁成功，替换前缀节点为当前节点，并且删除head节点
             if (p == head && tryAcquire(arg)) {
-                //设置当前线程对应的节点为头结点
+                //设置当前线程对应的节点为头结点，并且清除当前节点的thread和prev属性
                 setHead(node);
                 //删除原来的头结点
                 p.next = null; // help GC
@@ -113,6 +113,14 @@ final boolean acquireQueued(final Node node, int arg) {
     } finally {
         if (failed)
             cancelAcquire(node);
+    }
+
+    //清除新的头节点的thread和prev属性，也就是CLH队列的头节点除了初始化时一个新的节点，其他时候都是后续节点代替的
+    //只是thread和prev属性被清除罢了，但是signal状态没变
+    private void setHead(Node node) {
+        head = node;
+        node.thread = null;
+        node.prev = null;
     }
 
     /**

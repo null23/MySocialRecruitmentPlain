@@ -32,8 +32,55 @@
 ![AQS抽象类的acquire方法](https://raw.githubusercontent.com/null23/picture/master/Thread/acquire-aqs.png)
 
     可以看到，都调用了tryAcquire方法，NonFairSync和FairSync分别对其进行了不同的实现：
-![非公平锁的tryAcquire方法](https://raw.githubusercontent.com/null23/picture/master/Thread/nonfair-tryAcquire.png)
-![公平锁的tryAcquire方法](https://raw.githubusercontent.com/null23/picture/master/Thread/fair-tryAcquire.png)
+### 非公平锁的tryAcquire方法
+```
+final boolean nonfairTryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        if (compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc < 0) // overflow
+        {
+            throw new Error("Maximum lock count exceeded");
+        }
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+```
+### 公平锁的tryAcquire方法
+```
+//会在compareAndSetState失败之后，执行acquire方法的时候执行一次
+//然后会在CLH队列自旋的时候执行
+protected final boolean tryAcquire(int acquires) {
+    final Thread current = Thread.currentThread();
+    int c = getState();
+    if (c == 0) {
+        //判断之前还有节点等待不
+        if (!hasQueuedPredecessors() &&
+            compareAndSetState(0, acquires)) {
+            setExclusiveOwnerThread(current);
+            return true;
+        }
+    }
+    //重入
+    else if (current == getExclusiveOwnerThread()) {
+        int nextc = c + acquires;
+        if (nextc < 0)
+            throw new Error("Maximum lock count exceeded");
+        setState(nextc);
+        return true;
+    }
+    return false;
+}
+```
 
     可以看到区别，NonFairSync就是直接调用compareAndSetState方法，而FairSync是调用了hasQueuedPredecessors判断了当前线程节点是否是CLH队列的头节点(也就是之前有没有其他线程已经在等待获取同步资源，hasQueuedPredecessors方法返回false，说明之前没有其他线程在等待同步资源了，说明当前节点是头节点)，然后再判断CAS修改状态是否成功。如果成功就把AQS的当前占有线程设置为当前线程，并且返回true。
     这里引申出了另一个概念，也就是AQS的核心概念，CLH队列，AQS的操作大多是围绕这个队列来实现的，等下就会讲CLH队列。
@@ -46,7 +93,7 @@
     
     从上边已经看到了，公平锁和非公平锁的区别，目前有两个：
     1.公平锁是先把当前线程加入CLH队列，然后根据CLH队列的节点出队情况分配共享资源；非公平锁是直接先抢占，抢占失败再把当前线程加入CLH队列
-    2.对于tryAcquire方法的实现不同：对于公平锁，当判断到锁状态字段state == 0 时，不会立马将当前线程设置为该锁的占用线程，而是去判断是在此线程之前是否有其他线程在等待这个锁（执行hasQueuedPredecessors()方法），如果是的话，则该线程会加入到等待队列中，进行排队（FIFO，先进先出的排队形式）。这也就是为什么FairSync可以让线程之间公平获得该锁。
+***2.对于tryAcquire方法的实现不同：对于公平锁，当判断到锁状态字段state == 0 时，不会立马将当前线程设置为该锁的占用线程，而是去判断是在此线程之前是否有其他线程在等待这个锁（执行hasQueuedPredecessors()方法），如果是的话，则该线程会加入到等待队列中，进行排队（FIFO，先进先出的排队形式）。这也就是为什么FairSync可以让线程之间公平获得该锁。***
 
 ```
 //是否有其他线程先于当前线程等待获取锁，即判断队列中是否有前驱节点
