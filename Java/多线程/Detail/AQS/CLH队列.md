@@ -36,6 +36,12 @@ public final void acquire(int arg) {
         selfInterrupt();
 }
 
+//addWaiter中Node的构造函数
+Node(Thread thread, Node mode) {     // Used by addWaiter
+    this.nextWaiter = mode;
+    this.thread = thread;
+}
+
 //addWaiter方法，就是往CLH队列中添加一个新的Node节点到队列的尾部，并且把当前的节点tail更新成新的Node作为tail
 private Node addWaiter(Node mode) {
     Node node = new Node(Thread.currentThread(), mode);
@@ -45,7 +51,7 @@ private Node addWaiter(Node mode) {
     if (pred != null) {
         //新节点的前缀节点指向老的tail节点，也就是pred节点
         node.prev = pred;
-        //如果CAS修改当前节点为tail成功，则使用enq方法自旋修改tail
+        //如果CAS修改当前节点为tail失败(多个线程同时修改tail)，则使用enq方法自旋修改tail
         if (compareAndSetTail(pred, node)) {
             pred.next = node;
             return node;
@@ -72,11 +78,5 @@ private Node enq(final Node node) {
             }
         }
     }
-}
-
-//addWaiter中Node的构造函数
-Node(Thread thread, Node mode) {     // Used by addWaiter
-    this.nextWaiter = mode;
-    this.thread = thread;
 }
 ```
