@@ -50,6 +50,7 @@
 
 ```
 //是否有其他线程先于当前线程等待获取锁，即判断队列中是否有前驱节点
+//Head节点，这个节点是一个空的Node节点，不存储任何线程相关的信息
 public final boolean hasQueuedPredecessors() {
     // The correctness of this depends on head being initialized
     // before tail and on head.next being accurate if the current
