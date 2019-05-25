@@ -63,6 +63,7 @@ private Node addWaiter(Node mode) {
 
 //自旋修改新的node节点为新的tail节点
 private Node enq(final Node node) {
+    //经典的lockfree算法：循环+CAS
     for (;;) {
         Node t = tail;
         //有可能tail还没有初始化，此时tail=head
@@ -80,3 +81,6 @@ private Node enq(final Node node) {
     }
 }
 ```
+
+### lockfree名词解释
+    循环+CAS
