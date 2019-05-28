@@ -17,11 +17,13 @@
     由ResourceLoader通过统一的Resource接口完成，这个Resource对各种形式的BeanDefintion的是用都提供了统一接口。
     对于不同的BeanDefintion的存在形式，有不同的Resource提供。比如针对文件系统的FileSystemResource，针对类路径定义Bean信息的ClassPathResource...
 
-### BeanDefintion的载入
+### BeanDefintion的载入(得到BeanDefinitionHolder对象)
+    Spring 并不是直接把 XML 文件的内容转换成 BeanDefinitionHolder。解析时先解析 XML 得到 Document 对象，Document 对象就是 XML 文件在内存里的存储形式。从 Document 对象提取数据用的是 BeanDefinitionDocumentReader。
     简单来说，这步就是把用户定义好的Bean表示成IoC容器内部的数据结构，而这个IoC容器内部的数据结构就是BeanDefintion。
     BeanDefintion包含了Bean的一系列信息，比如Bean的名字，类型，成员变量都有啥，以及各个成员变量的类型和值...
     
 ### BeanDefintion的注册
+    通过BeanDefinitionHolder对象注册BeanDefintion到AbstractBeanFactory的哈希表
     这步是向IoC容器注册那些BeanDefintion的过程，把BeanDefintion的Bean的信息注册到registryMap中，是调用BeanDefintionRegistry接口的实现来完成的。
 
 ### 真正的依赖注入
