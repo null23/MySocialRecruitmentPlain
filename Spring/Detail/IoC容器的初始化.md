@@ -16,15 +16,36 @@
 ### BeanDefintion的Resource定位
     由ResourceLoader通过统一的Resource接口完成，这个Resource对各种形式的BeanDefintion的是用都提供了统一接口。
     对于不同的BeanDefintion的存在形式，有不同的Resource提供。比如针对文件系统的FileSystemResource，针对类路径定义Bean信息的ClassPathResource...
+    ---
+    这个 Resource 定位指的是 BeanDefinition 的资源定位，它由 ResourceLoader 通过统一的 Resource 接口来完成，这个 Resource 对各种形式的 BeanDefinition 的使用都提供了统一的接口。Spring 提供了适用于各种场景的默认实现，如类路径下的资源可以用 ClassPathResource、网络上的资源可以用 UrlResource。
+    解读：
+    Resource 是 Spring 对资源的一个抽象，通过对资源进行统一抽象，Spring 可以支持各种形式的资源文件以及自定义的资源，同时又可以确保底层对 Resource 的处理流程是统一的。Resource 是一个接口，Spring 采用的是面向接口的开发方式。
 
 ### BeanDefintion的载入(得到BeanDefinitionHolder对象)
     Spring 并不是直接把 XML 文件的内容转换成 BeanDefinitionHolder。解析时先解析 XML 得到 Document 对象，Document 对象就是 XML 文件在内存里的存储形式。从 Document 对象提取数据用的是 BeanDefinitionDocumentReader。
     简单来说，这步就是把用户定义好的Bean表示成IoC容器内部的数据结构，而这个IoC容器内部的数据结构就是BeanDefintion。
     BeanDefintion包含了Bean的一系列信息，比如Bean的名字，类型，成员变量都有啥，以及各个成员变量的类型和值...
+    ---
+    BeanDefinition 的载入过程，就是解析 Resource 对象得到 BeanDefinitionHolder 对象的过程。BeanDefinitionHolder 的作用是根据名称或者别名持有 beanDefinition，承载了 name 和 BeanDefinition 的映射信息。所以 BeanDefinitionHolder 拥有如下三个字段：
+    beanDefinition：实际持有的 beanDefinition 对象；
+    beanName：Bean 的名字；
+    aliases：Bean 的别名；
+    Spring 并不是直接把 XML 文件的内容转换成 BeanDefinitionHolder。解析时先解析 XML 得到 Document 对象，Document 对象就是 XML 文件在内存里的存储形式。从 Document 对象提取数据用的是 BeanDefinitionDocumentReader。
+
+    对于 Document 对象中的一个节点 Element，是使用 BeanDefinitionParser 进行解析。开发者也可以自定义 BeanDefinitionParser 从而实现对 xml 配置的自定义解析，可以实现诸如自定义 XML 标签的功能。
+
+    解读：
+    XML 的载入大致可以分为 Document、Element 两个载入阶段。作为通用的技术框架，Spring 还是为我们提供了很多扩展点，可以按需改变 Spring 的执行流程。对于 XML 的载入，最常见的就是自定义标签，比如 dubbo。
     
 ### BeanDefintion的注册
     通过BeanDefinitionHolder对象注册BeanDefintion到AbstractBeanFactory的哈希表
     这步是向IoC容器注册那些BeanDefintion的过程，把BeanDefintion的Bean的信息注册到registryMap中，是调用BeanDefintionRegistry接口的实现来完成的。
+    ---
+    这个操作是通过调用 BeanDefinitionRegistry 接口来实现的。这个注册过程把载入过程中解析得到的 BeanDeifinition 向 Ioc 容器进行注册。
+    调用 registerBeanDefinition 方法解析 BeanDefinitionHolder 对象，按照 Bean 的名称、别名将 BeanDefinition 注册到 IoC 容器中，存储在 beanDefinitionMap 中。至此，容器的初始化基本完成。
+    
+    解读：
+    registerBeanDefinition 是一个可以复用的方法，毕竟 Spring 内部注册的流程是确定的，因此 registerBeanDefinition 处于底层实现中。各种形式不同的上层实现最终都调用了同一个注册方法，殊途同归。在阿里很多软件架构中，也都采用了类似的设计，把注册配置统一收口便于管理。
 
 ### 真正的依赖注入
     getBean方法的调用
