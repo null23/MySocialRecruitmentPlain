@@ -138,8 +138,8 @@ final boolean acquireQueued(final Node node, int arg) {
             //返回true，会导致&&短路失败，执行parkAndCheckInterrupt方法
             return true;
         if (ws > 0) {
-            //如果前缀节点状态是cancelled，就说明这个节点不需要获取锁了，直接扔了就行
-            //这里会把所有的前缀节点以前的节点(包括前缀节点)，只要是状态是cancelled，全给清除
+            //如果head节点的下一个节点它是null或者已经被cancelled了（status>0）
+            //那么就从队列的尾巴往前找，找到一个最前面的并且状态不是cancelled的线程
             do {
                 //优先级：从右往左赋值
                 node.prev = pred = pred.prev;
@@ -154,6 +154,26 @@ final boolean acquireQueued(final Node node, int arg) {
     }
 }
 ```
+
+### 关于头节点和锁释放的关系
+    1.头节点是正在持有锁的节点，只不过是其thread属性在tryAcquire成功的时候设置为空了，并不代表头节点没有任何线程占有，这是个误区，需要注意
+
+    2.头节点的后继节点，也就是CLH队列的第二个节点，当自旋的时候发现头节点获取锁了，waitStatus状态=-1的时候，会阻塞
+***这里有个问题，为什么头节点的状态一定是-1？***
+    其实不一定，加入CLH队列只有一个节点。
+    但是别忘了，在多个节点的情况下，后续节点会把前缀节点的waitStatus>0的，改为waitStatus=-1
+
+    举个例子，一个新的CLH队列，有两个节点，head节点属于Thread0(但是head的thread属性已经被清除)，Thead0已经获取到锁，Thread1刚进入队列。
+    第二个节点在进行第一次自旋的时候，会把head节点的waitStatus从初始化的0修改为-1。然后第二个节点在第二次自旋的时候发现head节点的waitStatus=-1，进入阻塞状态。
+    现在第三个节点来了，第三个节点第一次自选的时候，发现第二个节点的waitStatus=0，然后CAS修改成-1.然后第三个节点在第二次自旋的时候，会进入阻塞状态
+    ....
+
+    3.当头节点释放锁，刚才说到第二个节点是阻塞的，所以head节点就会唤醒后继节点(其实就是第二个节点，如果第二个节点已经取消获锁，waitStatus=canceled=1，那么就从队尾开始找，找到一个waitStatus不大于0的节点。为啥是不大于0呢？因为如果只有两个节点的话，第二个节点的waitStatus并没有第三个节点来修改成-1，而是保持着初始化时候的0，所以waitStatus=0的节点也是可以被唤醒的)，然后第二个节点继续执行自旋操作，也就是acquire方法的自旋操作，这个自旋操作先判断当前节点的前缀节点是不是head，然后对应的tryAcquire(公平非公平的模板设计模式实现的方法)使用CAS获锁
+    如果获锁成功，就把当前节点设为新的head节点，并清除thread和prev属性
+***这里有个问题，为啥要用tryAcquire来让第二个节点获锁？按说在head释放锁之后，不就应该第二个节点直接就能获取锁了？***
+    nonono，加入在第二个节点获锁的时候，又来了个新的获锁请求，如果是非公平锁，是不会先直接就加入到CLH队列中的，而是先尝试获锁，因此第二个节点仍然后可能获锁失败。
+    而公平锁，会根据hasQueuedPredecessors判断之前是否有等待的线程，如果有，就会加入CLH队列。比如第二个节点在等待，那新的获锁请求只能往后稍稍加入CLH队列了。
+    
 
 ### lockfree名词解释
     循环+CAS

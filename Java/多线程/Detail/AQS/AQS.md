@@ -114,135 +114,61 @@ public final boolean hasQueuedPredecessors() {
 }
 ```
 
-#### acquire
-```
-public final void acquire(int arg) {
-    if (!tryAcquire(arg) &&
-        acquireQueued(addWaiter(Node.EXCLUSIVE), arg))
-        selfInterrupt();
-}
-
-//不断地获锁操作
-final boolean acquireQueued(final Node node, int arg) {
-    boolean failed = true;
-    try {
-        boolean interrupted = false;
-        for (;;) {
-            final Node p = node.predecessor();
-            if (p == head && tryAcquire(arg)) {
-                setHead(node);
-                p.next = null; // help GC
-                failed = false;
-                return interrupted;
-            }
-            if (shouldParkAfterFailedAcquire(p, node) &&
-                parkAndCheckInterrupt())
-                interrupted = true;
-        }
-    } finally {
-        if (failed)
-            cancelAcquire(node);
-    }
-}
-
-//队尾添加当前线程节点
-private Node addWaiter(Node mode) {
-    Node node = new Node(Thread.currentThread(), mode);
-    // Try the fast path of enq; backup to full enq on failure
-    Node pred = tail;
-    if (pred != null) {
-        node.prev = pred;
-
-        //快速尝试
-        if (compareAndSetTail(pred, node)) {
-            pred.next = node;
-            return node;
-        }
-    }
-    enq(node);
-    return node;
-}
-
-//加入队尾
-private Node enq(final Node node) {
-    for (;;) {
-        Node t = tail;
-        if (t == null) { // Must initialize
-            if (compareAndSetHead(new Node()))
-                tail = head;
-        } else {
-            node.prev = t;
-            if (compareAndSetTail(t, node)) {
-                t.next = node;
-                return t;
-            }
-        }
-    }
-}
-```
-    从上边可以看出，addWaiter方法是向队列尾部添加一个节点，通过调用compareAndSetTail方法和enq方法来实现的，若compareAndSetTail方法执行失败，则调用enq方法执行队尾添加节点的操作。
-    附上一篇关于此操作的链接：https://www.jianshu.com/p/c806dd7f60bc
-
-    当addWaiter方法执行成功，也就是添加节点成功，就会调用acquiredQueued方法进行不断地获锁操作。
-
-```
-//不断地获锁操作
-final boolean acquireQueued(final Node node, int arg) {
-    boolean failed = true;
-    try {
-        boolean interrupted = false;
-        for (;;) {
-            final Node p = node.predecessor();
-            if (p == head && tryAcquire(arg)) {
-                setHead(node);
-                p.next = null; // help GC
-                failed = false;
-                return interrupted;
-            }
-            if (shouldParkAfterFailedAcquire(p, node) &&
-                parkAndCheckInterrupt())
-                interrupted = true;
-        }
-    } finally {
-        if (failed)
-            cancelAcquire(node);
-    }
-}
-```
-    可以看到，这里是一个死循环，不断的判断当前节点是不是头节点head，并且不断的尝试获取锁。
-    如果是，就把head节点的下个节点设置为新的head节点，并且把头节点head的指向为空(帮助gc垃圾回收)。
-    这里有个问题，如果当前节点一直无法获取同步状态，那他将一直保持自旋状态吗？
-    我们来看下shouldParkAfterFailedAcquire方法:
-
-```
-CANCELLED：值为1，表示线程的获锁请求已经“取消”
-SIGNAL：值为-1，表示该线程一切都准备好了,就等待锁空闲出来给我
-CONDITION：值为-2，表示线程等待某一个条件（Condition）被满足
-PROPAGATE：值为-3，当线程处在“SHARED”模式时，该字段才会被使用上（在后续讲共享锁的时候再细聊）
-
-//检查当前节点是否应该阻塞
-private static boolean shouldParkAfterFailedAcquire(Node pred, Node node) {
-    int ws = pred.waitStatus;
-    if (ws == Node.SIGNAL)
-        return true;
-    if (ws > 0) {
-        do {
-            node.prev = pred = pred.prev;
-        } while (pred.waitStatus > 0);
-        pred.next = node;
-    } else {
-        compareAndSetWaitStatus(pred, ws, Node.SIGNAL);
-    }
-    return false;
-}
-```
-    先给个链接，感谢大神：https://blog.csdn.net/chen77716/article/details/6641477
-**规则1：当一个新的Node节点被初始化的时候，这个node的waitStatus是默认为0的。**
-**规则2：在shouldParkAfterFailedAcquire这个方法中，我们获取而了当前节点的前缀节点pred，然后获取了pred的waitStatus，我们根据当前ws=0，就走到了第二个if的else分支，把前缀节点pred的waitStatus设置为SINGNAL**
-**规则3：如果前继的节点状态为SIGNAL，表明当前节点需要unpark，则返回成功，此时acquireQueued方法的第12行（parkAndCheckInterrupt）将导致线程阻塞**
-**规则4：如果前继节点状态为CANCELLED(ws>0)，说明前置节点已经被放弃，则回溯到一个非取消的前继节点，返回false，acquireQueued方法的无限循环将递归调用该方法，直至规则1返回true，导致线程阻塞**
-**规则5：如果前继节点状态为非SIGNAL、非CANCELLED，则设置前继的状态为SIGNAL，返回false后进入acquireQueued的无限循环，与规则2同**
+### acquire
+    请看CLH队列的文档
 
     下边来一个流程图(来自 https://zhuanlan.zhihu.com/p/54297968 作者：养兔子的大叔)：
 ![当前线程是否应该阻塞的流程图](https://raw.githubusercontent.com/null23/picture/master/Thread/node-status-process.jpg)
     
+### unLock释放锁
+```
+ public final boolean release(int arg) {
+     //解锁一次，释放一次重入锁的记录，直到释放完可以唤醒之后的线程
+    if (tryRelease(arg)) {
+        Node h = head;
+        //理论上说waitStatus是不会=0的
+        if (h != null && h.waitStatus != 0)
+            unparkSuccessor(h);
+        return true;
+    }
+    return false;
+}
+
+//可重入的实现，每次释放锁都-1次获锁次数的记录，直到没有任何重入的记录
+protected final boolean tryRelease(int releases) {
+    int c = getState() - releases;
+    if (Thread.currentThread() != getExclusiveOwnerThread())
+        throw new IllegalMonitorStateException();
+    boolean free = false;
+    if (c == 0) {
+        free = true;
+        setExclusiveOwnerThread(null);
+    }
+    setState(c);
+    return free;
+}
+
+//唤醒之后的线程
+private void unparkSuccessor(Node node) {
+    /*
+        * If status is negative (i.e., possibly needing signal) try
+        * to clear in anticipation of signalling.  It is OK if this
+        * fails or if status is changed by waiting thread.
+        */
+    int ws = node.waitStatus;
+    //头节点的状态肯定是-1，因为是之前获锁成功的节点代替的，肯定被修改过waitStatus=-1
+    if (ws < 0)
+        compareAndSetWaitStatus(node, ws, 0);
+
+    ////如果s被取消，跳过被取消节点，直到找到一个没被取消的节点，唤醒这个节点，他会继续自旋
+    Node s = node.next;
+    if (s == null || s.waitStatus > 0) {
+        s = null;
+        for (Node t = tail; t != null && t != node; t = t.prev)
+            if (t.waitStatus <= 0)
+                s = t;
+    }
+    if (s != null)
+        LockSupport.unpark(s.thread);
+}
+```
