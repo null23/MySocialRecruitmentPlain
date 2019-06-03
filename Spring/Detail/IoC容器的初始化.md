@@ -43,7 +43,7 @@
     ---
     这个操作是通过调用 BeanDefinitionRegistry 接口来实现的。这个注册过程把载入过程中解析得到的 BeanDeifinition 向 Ioc 容器进行注册。
     调用 registerBeanDefinition 方法解析 BeanDefinitionHolder 对象，按照 Bean 的名称、别名将 BeanDefinition 注册到 IoC 容器中，存储在 beanDefinitionMap 中。至此，容器的初始化基本完成。
-    
+
     解读：
     registerBeanDefinition 是一个可以复用的方法，毕竟 Spring 内部注册的流程是确定的，因此 registerBeanDefinition 处于底层实现中。各种形式不同的上层实现最终都调用了同一个注册方法，殊途同归。在阿里很多软件架构中，也都采用了类似的设计，把注册配置统一收口便于管理。
 
@@ -57,3 +57,19 @@
     3.返回bean
 
 今天看下spring aop，dubbo服务发现详解，java spi原理，dubbo spi
+
+### BeanFactory和FactoryBean
+    FactoryBean本质就是一个Bean，通过这个Bean可以获取这个FactoryBean能创建的实例对象。
+    想要获取一个FactoryBean，就必须让一个Bean实现FactoryBean接口，然后这个Bean的实例就是FactoryBean了，我们可以在其getObject方法中实例化我们想获得的其他bean。
+    这个FactoryBean的作用仅仅就是获取其他的Bean，比如有个连接池类，我们选择在FactoryBean的getObject方法中初始化这个类。
+
+    FactoryBean只有三个方法：
+    public Object getObject() throws Exception {
+        return null;
+    }
+    public Class<?> getObjectType() {
+        return null;
+    }
+    public boolean isSingleton() {
+        return false;
+    }
