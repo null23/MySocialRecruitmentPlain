@@ -14,7 +14,8 @@ if (sharedInstance != null && args == null) {
             logger.debug("Returning cached instance of singleton bean '" + beanName + "'");
         }
     }
-    //根据缓存中获取的单例bean-sharedInstance返回实例
+    //在返回bean之前，对bean进行处理，因为这个bean很可能不是我们想要的那个bean
+***//比如sharedInstrance其实仅仅是个FactoryBean，但是，我们想要的是getObject返回的那个实例***
     bean = getObjectForBeanInstance(sharedInstance, name, beanName, null);
 }
 
@@ -38,7 +39,9 @@ private final Map<String, ObjectFactory<?>> singletonFactories = new HashMap<>(1
 private final Map<String, Object> earlySingletonObjects = new HashMap<>(16);
 
 ---------------------------------------------------------------------------------------------------
-//从缓存中获取单例Bean的实现方法
+//从缓存中获取单例Bean的实现方法，这个方法仅仅是从缓存中获取Bean
+//还有另一个getSingleton(String beanName, ObjectFactory<?> singletonFactory)方法，这个方法主要是创建Bean的方法
+//区别在于：一个仅仅是从缓存里拿，另一个是会创建
 protected Object getSingleton(String beanName, boolean allowEarlyReference) {
 
     //从beanName-instance的k-v缓存中取bean实例(一级缓存)
@@ -78,6 +81,10 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
     3.从singletonFactories(beanName->ObjectFactory)中获取
     第2步和第3步的区别，虽然都是获取了一个ObjectFactory，但是第2步的bean是完整的，而第3步的bean只是一个空壳子，我们只是为了获取其引用，这个bean并没有被真的初始化完成。
     
+### getObjectForBeanInstance()
+    在返回bean之前，对bean进行处理，因为这个bean很可能不是我们想要的那个bean
+***比如sharedInstrance其实仅仅是个FactoryBean，但是，我们想要的是getObject返回的那个实例，所以就要调用这个方法来返回我们真正想要的那个bean***
+
 
 ### isSingletonCurrentlyInCreation() 判断当前bean是否正在创建
 ```
