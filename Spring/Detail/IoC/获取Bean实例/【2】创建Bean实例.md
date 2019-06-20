@@ -1,6 +1,6 @@
 ## 来自芋道源码 http://svip.iocoder.cn/Spring/IoC-get-Bean-createBean-2/# 添加了一点自己的理解
 ### 创建Bean实例的主要过程(Spring 5)
-#### 1. Supplier回调
+#### 1. Supplier回调(Spring4是没有这个的)
     <1>处：
         如果存在 Supplier 回调，则调用 #obtainFromSupplier(Supplier<?> instanceSupplier, String beanName) 方法，进行初始化。
         详细解析，见「1.1 obtainFromSupplier」。
