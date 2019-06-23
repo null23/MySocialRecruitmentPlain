@@ -79,7 +79,7 @@ protected Object getSingleton(String beanName, boolean allowEarlyReference) {
     1.从singletonObjects(beanName->instance)中获取
     2.从earlySingletonObjects(beanName->ObjectFactory)中获取
     3.从singletonFactories(beanName->ObjectFactory)中获取
-    第2步和第3步的区别，虽然都是获取了一个ObjectFactory，但是第2步的bean是完整的，而第3步的bean只是一个空壳子，我们只是为了获取其引用，这个bean并没有被真的初始化完成。
+    第2步和第3步的区别，我现在也不清楚啊，哎
     
 ### getObjectForBeanInstance()
     在返回bean之前，对bean进行处理，因为这个bean很可能不是我们想要的那个bean。其实就是检测当前 bean 是否是 FactoryBean 类型的 bean 。

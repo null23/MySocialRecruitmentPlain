@@ -1,6 +1,6 @@
 ## 来自芋道源码 http://svip.iocoder.cn/Spring/IoC-get-Bean-createBean-2/# 添加了一点自己的理解
 
-### 创建Bean实例的主要过程(Spring 5)
+### 创建Bean实例的主要过程(Spring 5) 注意了，这里仅仅是Bean实例，并没有属性的注入
 ### 这里通篇描述的，都是选择合适实例化策略，有以下的几个实例化策略
 #### 1. Supplier回调(Spring4是没有这个的)
     <1>处：
