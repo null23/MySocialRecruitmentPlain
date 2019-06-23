@@ -13,7 +13,7 @@
 
     下边说的都是IoC容器的初始化：
 
-### BeanDefintion的Resource定位
+### BeanDefintion的Resource定位(配置文件资源->Resource)
     由ResourceLoader通过统一的Resource接口完成，这个Resource对各种形式的BeanDefintion的是用都提供了统一接口。
     对于不同的BeanDefintion的存在形式，有不同的Resource提供。比如针对文件系统的FileSystemResource，针对类路径定义Bean信息的ClassPathResource...
     ---
@@ -21,7 +21,7 @@
     解读：
     Resource 是 Spring 对资源的一个抽象，通过对资源进行统一抽象，Spring 可以支持各种形式的资源文件以及自定义的资源，同时又可以确保底层对 Resource 的处理流程是统一的。Resource 是一个接口，Spring 采用的是面向接口的开发方式。
 
-### BeanDefintion的载入(得到BeanDefinitionHolder对象)
+### BeanDefintion的载入(Resource->BeanDefinitionHolder对象)
     Spring 并不是直接把 XML 文件的内容转换成 BeanDefinitionHolder。解析时先解析 XML 得到 Document 对象，Document 对象就是 XML 文件在内存里的存储形式。从 Document 对象提取数据用的是 BeanDefinitionDocumentReader。
     简单来说，这步就是把用户定义好的Bean表示成IoC容器内部的数据结构，而这个IoC容器内部的数据结构就是BeanDefintion。
     BeanDefintion包含了Bean的一系列信息，比如Bean的名字，类型，成员变量都有啥，以及各个成员变量的类型和值...
@@ -37,7 +37,7 @@
     解读：
     XML 的载入大致可以分为 Document、Element 两个载入阶段。作为通用的技术框架，Spring 还是为我们提供了很多扩展点，可以按需改变 Spring 的执行流程。对于 XML 的载入，最常见的就是自定义标签，比如 dubbo。
     
-### BeanDefintion的注册
+### BeanDefintion的注册(BeanDefinitionHolder->BeanDefinition->BeanDefinitionMap)
     通过BeanDefinitionHolder对象注册BeanDefintion到AbstractBeanFactory的哈希表
     这步是向IoC容器注册那些BeanDefintion的过程，把BeanDefintion的Bean的信息注册到registryMap中，是调用BeanDefintionRegistry接口的实现来完成的。
     ---
