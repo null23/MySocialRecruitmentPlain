@@ -48,6 +48,7 @@ public void refresh() throws BeansException, IllegalStateException {
          // 重点，重点，重点
          // 初始化所有的 singleton beans
          //（lazy-init 的除外）
+         //这里会实例化并且属性注入所有的bean
          finishBeanFactoryInitialization(beanFactory);
 
          // 最后，广播事件，ApplicationContext 初始化完成，不展开
