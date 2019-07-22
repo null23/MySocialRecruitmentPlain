@@ -30,3 +30,5 @@
    与redo log不同的是，磁盘上不存在单独的undo log文件，所有的undo log均存放在主ibd数据文件中（表空间）。
 
 # bin log
+   binlog常用来进行数据恢复、数据库复制，常见的mysql主从架构，就是采用slave同步master的binlog实现的。
+   另外通过解析binlog能够实现mysql到其他数据源（如ElasticSearch)的数据复制。
