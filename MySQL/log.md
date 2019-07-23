@@ -32,3 +32,10 @@
 # bin log
    binlog常用来进行数据恢复、数据库复制，常见的mysql主从架构，就是采用slave同步master的binlog实现的。
    另外通过解析binlog能够实现mysql到其他数据源（如ElasticSearch)的数据复制。
+   
+   
+# Innodb ACID如何保证
+   • 原子性 redo + undo
+   • 一致性 redo
+   • 隔离性 锁 + MVCC
+   • 持久性 redo
