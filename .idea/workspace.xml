@@ -32,12 +32,12 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="离职冲刺计划.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/近期计划/离职冲刺计划.md">
+      <file leaf-file-name="给爷冲.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/近期计划/给爷冲.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="462">
-                <caret line="21" column="21" lean-forward="false" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+              <first_editor relative-caret-position="417">
+                <caret line="46" column="19" lean-forward="true" selection-start-line="46" selection-start-column="19" selection-end-line="46" selection-end-column="19" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -70,6 +70,7 @@
         <option value="$PROJECT_DIR$/MySQL/MVCC.md" />
         <option value="$PROJECT_DIR$/MySQL/InnoDB特性.md" />
         <option value="$PROJECT_DIR$/近期计划/离职冲刺计划.md" />
+        <option value="$PROJECT_DIR$/近期计划/给爷冲.md" />
       </list>
     </option>
   </component>
@@ -539,12 +540,12 @@
       <workItem from="1563853396246" duration="646000" />
       <workItem from="1563855173412" duration="821000" />
       <workItem from="1563978742987" duration="1213000" />
-      <workItem from="1564369026142" duration="2104000" />
+      <workItem from="1564369026142" duration="6507000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="13201000" />
+    <option name="totallyTimeSpent" value="17604000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
@@ -778,11 +779,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/近期计划/离职冲刺计划.md">
+    <entry file="file://$PROJECT_DIR$/近期计划/给爷冲.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="462">
-            <caret line="21" column="21" lean-forward="false" selection-start-line="21" selection-start-column="21" selection-end-line="21" selection-end-column="21" />
+          <first_editor relative-caret-position="417">
+            <caret line="46" column="19" lean-forward="true" selection-start-line="46" selection-start-column="19" selection-end-line="46" selection-end-column="19" />
             <folding />
           </first_editor>
           <second_editor />
