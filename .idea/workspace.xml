@@ -36,8 +36,8 @@
         <entry file="file://$PROJECT_DIR$/近期计划/给爷冲.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="1694">
-                <caret line="77" column="27" lean-forward="false" selection-start-line="77" selection-start-column="27" selection-end-line="77" selection-end-column="27" />
+              <first_editor relative-caret-position="198">
+                <caret line="24" column="17" lean-forward="false" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -580,15 +580,15 @@
       <workItem from="1563853396246" duration="646000" />
       <workItem from="1563855173412" duration="821000" />
       <workItem from="1563978742987" duration="1213000" />
-      <workItem from="1564369026142" duration="12527000" />
+      <workItem from="1564369026142" duration="13165000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="23624000" />
+    <option name="totallyTimeSpent" value="24262000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-11" y="-11" width="1942" height="1042" extended-state="7" />
+    <frame x="-11" y="-11" width="1942" height="1042" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -855,8 +855,8 @@
     <entry file="file://$PROJECT_DIR$/近期计划/给爷冲.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="1694">
-            <caret line="77" column="27" lean-forward="false" selection-start-line="77" selection-start-column="27" selection-end-line="77" selection-end-column="27" />
+          <first_editor relative-caret-position="198">
+            <caret line="24" column="17" lean-forward="false" selection-start-line="24" selection-start-column="17" selection-end-line="24" selection-end-column="17" />
             <folding />
           </first_editor>
           <second_editor />
