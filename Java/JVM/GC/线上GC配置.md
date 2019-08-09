@@ -37,3 +37,13 @@ chown -R tomcat:tomcat $CATALINA_BASE/cache
 chown -R tomcat:tomcat $CATALINA_BASE/conf
 chown -R tomcat:tomcat $CATALINA_BASE/work
 chown -R tomcat:tomcat $CATALINA_BASE/temp
+
+# thanos 
+export TOMCAT_USER="tomcat"
+export JAVA_OPTS="-Xms2048m -Xmx2048m -XX:NewSize=256m -XX:PermSize=256m -server -XX:+DisableExplicitGC -XX:+UnlockDiagnosticVMOptions -XX:+G1SummarizeConcMark -XX:+UseG1GC -Dqunar.logs=$CATALINA_BASE/logs -Dqunar.cache=$CATALINA_BASE/cache -verbose:gc -XX:+PrintGCDateStamps -XX:+PrintGCDetails -Xloggc:$CATALINA_BASE/logs/gc.log"
+export JAVA_OPTS="$JAVA_OPTS -Djava.security.egd=file:/dev/./urandom"
+chown -R tomcat:tomcat $CATALINA_BASE/logs
+chown -R tomcat:tomcat $CATALINA_BASE/cache
+chown -R tomcat:tomcat $CATALINA_BASE/conf
+chown -R tomcat:tomcat $CATALINA_BASE/work
+chown -R tomcat:tomcat $CATALINA_BASE/temp
